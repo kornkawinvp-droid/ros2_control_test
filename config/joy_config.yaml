@@ -1,0 +1,18 @@
+/teleop_twist_joy_node:
+  ros__parameters:
+    require_enable_button: false
+    
+    axis_linear:
+      x: 4       # stick ซ้าย แกน Y = หน้า/หลัง
+      y: 3       # stick ซ้าย แกน X = strafe ซ้าย/ขวา
+    scale_linear:
+      x: 0.5     # ✅ ตรงกับ MAX_SPEED พอดี
+      y: 0.5     # ✅ ตรงกับ MAX_SPEED พอดี
+      
+    axis_angular:
+      yaw: 0     # stick ขวา แกน X = หมุน
+    scale_angular:
+      yaw: 1.0   # ✅ ตรงกับ MAX_ANGULAR พอดี
+      
+    deadzone: 0.1
+    publish_stamped_twist: false
