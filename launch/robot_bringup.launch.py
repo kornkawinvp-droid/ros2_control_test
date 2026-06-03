@@ -89,4 +89,18 @@ def generate_launch_description():
                 parameters=[ekf_config, {'use_sim_time': False}],
             ),
 
+        Node(
+                package='sllidar_ros2',
+                executable='sllidar_node',
+                name='sllidar_node',
+                parameters=[{
+                    'serial_port':      '/dev/ttyUSB0',
+                    'serial_baudrate':  460800,
+                    'frame_id':         'lidar_link',
+                    'inverted':         False,
+                    'angle_compensate': True,
+                }],
+                output='screen'
+            ),
+
     ])
