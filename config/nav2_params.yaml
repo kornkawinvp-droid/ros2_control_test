@@ -92,7 +92,7 @@ controller_server:
     general_goal_checker:
       stateful: True
       plugin: "nav2_controller::SimpleGoalChecker"
-      xy_goal_tolerance: 0.25
+      xy_goal_tolerance: 0.05
       yaw_goal_tolerance: 0.25
     FollowPath:
       plugin: "nav2_mppi_controller::MPPIController"
@@ -104,13 +104,13 @@ controller_server:
       ay_max: 3.0
       ay_min: -3.0
       az_max: 6.28
-      vx_std: 0.2
-      vy_std: 0.2
-      wz_std: 1.2
-      vx_max: 0.5
-      vy_max: 0.5      # เปิดเคลื่อนข้าง — สำคัญสำหรับ Mecanum
-      wz_max: 3.14
-      vx_min: -0.5
+      vx_std: 0.12
+      vy_std: 0.12    # สัดส่วนต่อ max สูง (0.67) → กล้าลองสไลด์
+      wz_std: 0.25    # สัดส่วนต่อ max ต่ำ (0.38) → ไม่ทุ่มไปกับหมุน
+      vx_max: 0.07
+      vy_max: 0.14
+      wz_max: 0.32
+      vx_min: -0.22
       iteration_count: 1
       prune_distance: 1.7
       transform_tolerance: 0.1
@@ -140,7 +140,7 @@ controller_server:
       GoalAngleCritic:
         enabled: true
         cost_power: 1
-        cost_weight: 5.0
+        cost_weight: 4.0
         threshold_to_consider: 3.0
       PreferForwardCritic:
         enabled: false
@@ -169,13 +169,13 @@ controller_server:
       PathFollowCritic:
         enabled: true
         cost_power: 1
-        cost_weight: 5.0
+        cost_weight: 8.0
         offset_from_furthest: 5
         threshold_to_consider: 1.4
       PathAngleCritic:
-        enabled: false
+        enabled: true
         cost_power: 1
-        cost_weight: 0.0
+        cost_weight: 2.0
         offset_from_furthest: 4
         threshold_to_consider: 0.5
         max_angle_to_furthest: 0.5
@@ -196,7 +196,7 @@ local_costmap:
       width: 3
       height: 3
       resolution: 0.05
-      robot_radius: 0.22
+      robot_radius: 0.13
       plugins: ["voxel_layer", "inflation_layer"]
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
@@ -234,7 +234,7 @@ global_costmap:
       publish_frequency: 1.0
       global_frame: map
       robot_base_frame: base_link
-      robot_radius: 0.22
+      robot_radius: 0.13
       resolution: 0.05
       track_unknown_space: true
       plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
@@ -362,8 +362,8 @@ velocity_smoother:
     stamp_smoothed_velocity_with_smoothing_time: False
     scale_velocities: False
     feedback: "OPEN_LOOP"
-    max_velocity: [0.5, 0.5, 3.14]
-    min_velocity: [-0.5, -0.5, -3.14]
+    max_velocity: [0.22, 0.14, 0.36]
+    min_velocity: [-0.22, -0.14, -0.36]
     max_accel: [2.5, 2.5, 6.28]
     max_decel: [-2.5, -2.5, -6.28]
     odom_topic: "odom"
