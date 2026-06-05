@@ -107,10 +107,10 @@ controller_server:
       vx_std: 0.12
       vy_std: 0.35    # สัดส่วนต่อ max สูง (0.67) → กล้าลองสไลด์
       wz_std: 0.40    # สัดส่วนต่อ max ต่ำ (0.38) → ไม่ทุ่มไปกับหมุน
-      vx_max: 0.35
-      vy_max: 0.35
-      wz_max: 0.80
-      vx_min: -0.22
+      vx_max: 0.5
+      vy_max: 0.5
+      wz_max: 1.2
+      vx_min: -0.35
       iteration_count: 2
       prune_distance: 1.7
       transform_tolerance: 0.1
@@ -362,8 +362,8 @@ velocity_smoother:
     stamp_smoothed_velocity_with_smoothing_time: False
     scale_velocities: False
     feedback: "OPEN_LOOP"
-    max_velocity: [0.35, 0.35, 0.80]
-    min_velocity: [-0.35, -0.35, -0.80]
+    max_velocity: [0.5, 0.5, 1.2]
+    min_velocity: [-0.5, -0.5, -1.2]
     max_accel: [2.5, 2.5, 6.28]
     max_decel: [-2.5, -2.5, -6.28]
     odom_topic: "odom"
