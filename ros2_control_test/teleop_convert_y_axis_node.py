@@ -6,7 +6,7 @@ from geometry_msgs.msg import Twist, TwistStamped
 class JoyControl(Node):
     def __init__(self):
         super().__init__("joy_control")
-        self.sub_ = self.create_subscription(Twist, "/cmd_vel_stabilize", self.callback, 10)
+        self.sub_ = self.create_subscription(Twist, "/cmd_vel", self.callback, 10)
         self.pub_ = self.create_publisher(
             TwistStamped, "/mecanum_drive_controller/reference", 10)
 

@@ -9,8 +9,8 @@ class YawRateStabilizer(Node):
         super().__init__('yaw_rate_stabilizer')
 
         # เริ่มแบบนุ่มๆ ก่อน
-        self.kp = 0.25
-        self.ki = 0.08
+        self.kp = 0.35
+        self.ki = 0.15
 
         self.i_limit = 0.3
         self.deadband = 0.05

@@ -80,10 +80,10 @@ def generate_launch_description():
             executable='cmd_vel_yflip',
         ),
 
-        Node(
-            package='ros2_control_test',
-            executable='yaw_control',
-        ),
+        # Node(
+        #     package='ros2_control_test',
+        #     executable='yaw_control',
+        # ),
 
         Node(
                 package='robot_localization',
