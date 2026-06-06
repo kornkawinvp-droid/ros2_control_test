@@ -37,6 +37,7 @@ setup(
     entry_points={
         'console_scripts': [
             'cmd_vel_yflip = ros2_control_test.teleop_convert_y_axis_node:main',
+            'yaw_control = ros2_control_test.yaw_control:main',
         ],
     },
 )

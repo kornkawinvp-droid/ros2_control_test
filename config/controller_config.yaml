@@ -21,9 +21,9 @@ mecanum_drive_controller:
     rear_right_wheel_state_joint_name: rear_right_wheel_joint
 
     kinematics:
-      wheels_radius: 0.0625
+      wheels_radius: 0.0635
       # lx + ly : ระยะจากจุดศูนย์กลางหุ่นถึงล้อ (ครึ่งหนึ่งของ wheelbase + ครึ่งของ track)
-      sum_of_robot_center_projection_on_X_Y_axis: 0.365
+      sum_of_robot_center_projection_on_X_Y_axis: 0.375
 
     base_frame_id: base_footprint
     odom_frame_id: odom

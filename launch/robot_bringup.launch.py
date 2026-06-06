@@ -78,7 +78,11 @@ def generate_launch_description():
         Node(
             package='ros2_control_test',
             executable='cmd_vel_yflip',
-            name='cmd_vel_yflip',
+        ),
+
+        Node(
+            package='ros2_control_test',
+            executable='yaw_control',
         ),
 
         Node(
