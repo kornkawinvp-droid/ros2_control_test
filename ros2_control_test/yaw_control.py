@@ -3,92 +3,59 @@ from rclpy.node import Node
 from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
 
-class YawRateStabilizer(Node):
 
+class YawRateStabilizer(Node):
     def __init__(self):
         super().__init__('yaw_rate_stabilizer')
-
-        # เริ่มแบบนุ่มๆ ก่อน
-        self.kp = 0.35
-        self.ki = 0.15
-
+        self.kp = 0.15
+        self.ki = 0.0
         self.i_limit = 0.3
         self.deadband = 0.05
-
+        self.cmd_timeout = 0.3          # ไม่มี cmd ใหม่เกินนี้ = stop
         self.cmd = Twist()
-
         self.integral = 0.0
         self.last_t = None
-
-        self.create_subscription(
-            Twist,
-            '/cmd_vel',
-            self.cmd_cb,
-            10
-        )
-
-        self.create_subscription(
-            Odometry,
-            '/odometry/filtered',
-            self.odom_cb,
-            30
-        )
-
-        self.pub = self.create_publisher(
-            Twist,
-            '/cmd_vel_stabilize',
-            10
-        )
+        self.last_cmd_t = None          # เวลาที่รับ cmd ล่าสุด
+        self.create_subscription(Twist, '/cmd_vel_nav', self.cmd_cb, 10)
+        self.create_subscription(Odometry, '/odometry/filtered', self.odom_cb, 30)
+        self.pub = self.create_publisher(Twist, '/cmd_vel', 10)
 
     def cmd_cb(self, msg):
         self.cmd = msg
+        self.last_cmd_t = self.get_clock().now().nanoseconds * 1e-9
 
     def odom_cb(self, msg):
-
         t = self.get_clock().now().nanoseconds * 1e-9
-
         if self.last_t is None:
             self.last_t = t
             return
-
         dt = t - self.last_t
         self.last_t = t
 
-        gz = msg.twist.twist.angular.z
+        # cmd หมดอายุ -> หยุดสนิท ไม่ republish ค่าค้าง
+        if self.last_cmd_t is None or (t - self.last_cmd_t) > self.cmd_timeout:
+            self.integral = 0.0
+            self.cmd = Twist()
+            self.pub.publish(Twist())
+            return
 
+        gz = msg.twist.twist.angular.z
         if abs(gz) < self.deadband:
             gz = 0.0
 
         target = self.cmd.angular.z
-
         out = Twist()
         out.linear.x = self.cmd.linear.x
         out.linear.y = self.cmd.linear.y
 
-        moving = (
-            abs(self.cmd.linear.x) > 0.02 or
-            abs(self.cmd.linear.y) > 0.02
-        )
+        moving = (abs(self.cmd.linear.x) > 0.02 or abs(self.cmd.linear.y) > 0.02)
 
         if moving:
-
             err = target - gz
-
             self.integral += err * dt
-
-            self.integral = max(
-                -self.i_limit,
-                min(self.i_limit, self.integral)
-            )
-
-            out.angular.z = (
-                target +
-                self.kp * err +
-                self.ki * self.integral
-            )
-
+            self.integral = max(-self.i_limit, min(self.i_limit, self.integral))
+            out.angular.z = target + self.kp * err + self.ki * self.integral
         else:
-
             self.integral = 0.0
             out.angular.z = target
 
@@ -97,14 +64,11 @@ class YawRateStabilizer(Node):
 
 def main():
     rclpy.init()
-
     node = YawRateStabilizer()
-
     try:
         rclpy.spin(node)
     except KeyboardInterrupt:
         pass
-
     node.destroy_node()
     rclpy.shutdown()
 
